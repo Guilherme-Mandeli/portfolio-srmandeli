@@ -1,0 +1,66 @@
+.env
+**/.env
+
+# ===============================
+# NODE / VUE / VITE
+# ===============================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/.cache/
+*.log
+
+# Vite environment files
+/frontend/.env
+/frontend/.env.*.local
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===============================
+# PHP / COMPOSER
+# ===============================
+/vendor/
+/backend/vendor/
+composer.lock
+
+# ===============================
+# DOCKER / DATABASE
+# ===============================
+/docker/mysql/
+/docker/data/
+/docker/*.pid
+/docker/*.sock
+
+# Docker environment
+/.env
+
+# ===============================
+# SYSTEM FILES
+# ===============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# ===============================
+# IDEs and Editors
+# ===============================
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# ===============================
+# MISC
+# ===============================
+*.swp
+*.bak
+*.tmp
+*.log
+*.pid
+*.seed
+*.pid.lock
