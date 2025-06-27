@@ -33,7 +33,7 @@ composer.lock
 /docker/data/
 /docker/*.pid
 /docker/*.sock
-
+g
 # Docker environment
 /.env
 
