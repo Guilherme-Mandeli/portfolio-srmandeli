@@ -1,4 +1,4 @@
-# Project Name
+# Portfolio SrMandeli
 
 This project uses the following technologies:
 
