@@ -23,8 +23,13 @@ This project uses the following technologies:
    MYSQL_PASSWORD=securepassword
 
    PHP_HTTP_PORT=8080
-   MYSQL_PORT=3306
+   MYSQL_PORT=3317
    FRONTEND_PORT=5173
+
+   DB_HOST=database
+   DB_NAME=db_name
+   DB_USER=db_user
+   DB_PASS=db_pass
    ```
 
 3. Build and start the Docker containers:

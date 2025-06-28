@@ -42,24 +42,27 @@ if ($apiResponse !== false) {
             text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
         }
         .response {
+            font-family: monospace;
             margin-bottom: 16px;
             background-color: rgb(28 29 57 / 78%);
-            padding: 5px 10px;
             line-height: 1em;
+            padding-top: 7px;
             padding-bottom: 8px;
-            white-space: pre-wrap;
-            word-break: break-word;
+            padding-inline: 10px;
+            min-width: 380px;
+            text-align: start;
         }
         .datetime {
             font-size: 1rem;
             min-width: 280px;
             background: rgb(16 17 53 / 15%);
             padding: 15px 30px;
-            border-radius: 25px;
+            border-radius: 20px;
             box-shadow: 0 0 30px rgb(93 0 255 / 46%), 0 0 6px rgb(255 255 255 / 66%);
             user-select: none;
             min-width: 320px;
             margin-bottom: 10px;
+            
         }
         .timezone-label {
             font-weight: 600;
@@ -71,6 +74,9 @@ if ($apiResponse !== false) {
         @media screen and (max-width: 420px) {
             h1 {
                 font-size: 1.5rem;
+            }
+            .response {
+                min-width: 230px;
             }
             .datetime {
                 font-size: 0.8rem;

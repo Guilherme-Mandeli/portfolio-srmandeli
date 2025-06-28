@@ -3,7 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 echo json_encode([
     'status' => 'ok',
-    'message' => 'Backend PHP funcionando!',
+    'message' => 'Server connected!',
     'timezones' => [
         'Europe/Lisbon' => (new DateTime('now', new DateTimeZone('Europe/Lisbon')))->format('d/m/Y H:i:s'),
         'Europe/Madrid' => (new DateTime('now', new DateTimeZone('Europe/Madrid')))->format('d/m/Y H:i:s'),
