@@ -1,9 +1,5 @@
 <?php
-
-/**
- * Loads the database connection.
- */
-require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '../../bootstrap.php';
 
 /**
  * Retrieves all rows from the project_stack table.

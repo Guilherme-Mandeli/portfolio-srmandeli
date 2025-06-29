@@ -41,6 +41,34 @@ This project uses the following technologies:
    - Frontend (Vue.js dev server): http://localhost:5173
    - Backend (PHP + Apache): http://localhost:8080
 
+## Database Migration and Seeding
+
+After your Docker container are up and running, you need to create the database tables and insert initial data.
+
+To do this, follow these steps:
+
+1. Access the PHP container terminal (replace 'php-apache' with your actual container name):
+```bash
+docker exec -it php-apache bash
+```
+
+2. Inside the container, run the migration script:
+```bash
+php backend/migrate.php
+```
+
+You should see output confirming the migrations and seeders executed like this:
+
+```bash
+🔹 Running Migrations...
+✅ Migration '2025_06_29_create_project_stack_table.php' executed.
+🔹 Running Seeders...
+✅ Seeder 'ProjectStackSeeder.php' executed.
+[ Migrations and Seeders finished. ]
+```
+
+Now your database is ready with the required tables and seed data.
+
 ## Notes
 
 - Use `docker-compose down` to stop the containers.
