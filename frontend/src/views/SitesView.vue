@@ -31,7 +31,10 @@ export default defineComponent({
 
     async function getSites(): Promise<void> {
       try {
-        const response = await fetch('/api/sites')
+        // const response = await fetch('/api/sites.php')
+        const response = await fetch('http://localhost:8080/api/sites.php')
+
+
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`)
         }

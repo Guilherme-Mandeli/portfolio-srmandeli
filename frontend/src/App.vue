@@ -7,7 +7,7 @@
         <router-link to="/sites">Sites</router-link>
       </nav>
     </header>
-
+    
     <main>
       <router-view />
     </main>
