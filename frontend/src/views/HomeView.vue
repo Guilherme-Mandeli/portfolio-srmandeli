@@ -1,7 +1,7 @@
 <template>
     <section class="home">
         <h1>Welcome to the Home Page</h1>
-        <p>This is the home of my portfolio project.</p>
+        <p>This is the home of my portfolio project!</p>
     </section>
 </template>
 

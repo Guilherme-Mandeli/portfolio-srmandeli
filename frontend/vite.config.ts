@@ -18,14 +18,20 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0',
+    host: true, // '0.0.0.0'
     port: 5173,
+    strictPort: true,
     proxy: {
       '/api': {
         target: 'http://backend',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+    },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',  // ou IP da máquina Docker host acessível
+      port: 5173
     },
   }
 })
