@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio SrMandeli</title>
+    <style>
+        /* Seu CSS existente */
+        *{
+            margin:0;
+            padding:0;
+        }
+        body {
+            padding-block: 50px;
+            padding-inline: 5%;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at bottom left, #40645c, #071822);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            gap: 15px;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 24px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .response {
+            font-family: monospace;
+            margin-bottom: 16px;
+            background-color: #071822d9;
+            line-height: 1em;
+            padding-top: 7px;
+            padding-bottom: 8px;
+            padding-inline: 10px;
+            min-width: 380px;
+            text-align: start;
+            max-width: 100%;
+            overflow: auto;
+        }
+        .datetime {
+            font-size: 1rem;
+            background: rgb(16 17 53 / 15%);
+            padding: 15px 15px;
+            border: 1px solid rgb(255 255 255 / 12%);
+            border-radius: 20px;
+            box-shadow: 0 0 12px #5a8d82, 0 0 2px rgb(255 255 255 / 66%);
+            user-select: none;
+            min-width: 320px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            background: radial-gradient(circle at top center, #436657 -30%, #081d21 83%);
+        }
+        .timezone-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+        @media screen and (max-width: 510px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .response {
+                min-width: 230px;
+            }
+            .datetime {
+                font-size: 0.8rem;
+                width: 100%;
+                min-width: 265px;
+                max-width: 265px;
+            }
+            .timezone-label {
+                font-size: 1rem;
+            }
+        }
+        #duck {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            pointer-events: none;
+            transition: transform 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <h1>Server connected!</h1>
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respuesta API</title>
+</head>
+<body>
+    <div class="response" id="response-container"></div>
+
+    <div id="timezones-container"></div>
+
+    <script>
+        fetch('api/index.php')
+            .then(response => response.json())
+            .then(data => {
+                const responseContainer = document.getElementById('response-container');
+                if (!data) {
+                    responseContainer.innerHTML = "Error al buscar datos de la API.";
+                } else {
+                    responseContainer.innerHTML = `
+                        <p>Status: ${data.status}</p>
+                        <p>Mensaje: ${data.message}</p>
+                    `;
+                }
+
+                // Show timezones
+                const timezonesContainer = document.getElementById('timezones-container');
+                if (data && data.timezones && typeof data.timezones === 'object') {
+                    let timezonesHTML = '';
+                    
+                    for (const zone in data.timezones) {
+                        if (data.timezones.hasOwnProperty(zone)) {
+                            const time = data.timezones[zone];
+                            timezonesHTML += `
+                                <div class="datetime">
+                                    <div class="timezone-label">${zone}</div>
+                                    ${time}
+                                </div>
+                            `;
+                        }
+                    }
+
+                    timezonesContainer.innerHTML = timezonesHTML;
+                } else {
+                    timezonesContainer.innerHTML = "<p>No time zone information available.</p>";
+                }
+            })
+            .catch( error => {
+                document.getElementById('response-container').innerHTML = "Error making API request.";
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html>
+</body>
+</html>

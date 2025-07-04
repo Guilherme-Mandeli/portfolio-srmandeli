@@ -1,20 +1,36 @@
-// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
+
+// Layouts
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+
+// Views
 import HomeView from '@/views/HomeView.vue'
 import SitesView from '@/views/SitesView.vue'
 
 const routes = [
   {
       path: '/',
-      name: 'Home',
-      component: HomeView,
-      alias: '/home'
-  },
-  {
-    path: '/sites',
-    name: 'Sites',
-    component: SitesView
-  },
+      component: DefaultLayout,
+      children: [
+        {
+          path: ``,
+          alias: '/home',
+          name: 'Home',
+          component: HomeView,
+          meta: {
+            mainID: 'home'
+          }
+        },
+        {
+          path: `sites`,
+          name: 'Sites',
+          component: SitesView,
+          meta: {
+            mainID: 'sites'
+          }
+        }
+      ]
+  }
 ]
 
 const router = createRouter({
