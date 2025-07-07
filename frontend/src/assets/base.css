@@ -1,3 +1,9 @@
+:root {
+  --hero-effect-circle-transition-x: -50%;
+  --hero-effect-circle-transition-y: -50%;
+  --hero-effect-circle-scale: 1;
+}
+
 body {
   min-height: 200svh;
   background: #081822;

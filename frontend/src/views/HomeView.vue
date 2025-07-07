@@ -27,13 +27,130 @@
             <br />
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
         </div>
+        <div class="row dynamic-row">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+        </div>
+        <div class="row dynamic-row">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+            <br />
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi corrupti dolore eius blanditiis rem dolores error nostrum voluptatum eveniet? Perferendis inventore sit vitae facere doloribus! Quas pariatur ipsam fugiat ea?</p>
+        </div>
     </section>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+import { onMounted, onBeforeUnmount } from 'vue';
+
+let lastMouseX = -1;
+let lastMouseY = -1;
+let viewportWidth = window.innerWidth;
+let viewportHeight = window.innerHeight;
+let throttleTimeout: number | null = null;
+
+const THROTTLE_DELAY = 50; // Milisegundos
+
+/**
+ * Calcula y aplica las variables CSS optimizadas por posición de mouse.
+ */
+function applyMouseEffects(): void {
+    const ratioX = lastMouseX / viewportWidth;
+    const ratioY = lastMouseY / viewportHeight;
+
+    const x = -30 + (-70 + 30) * ratioX;
+    const y = -30 + (-70 + 30) * ratioY;
+
+    const dx = ratioX - 0.5;
+    const dy = ratioY - 0.5;
+    const distance = Math.sqrt(dx * dx + dy * dy) / 0.707;
+
+    const minScale = 0.9;
+    const maxScale = 1.25;
+    const scale = minScale + (maxScale - minScale) * distance;
+
+    const root = document.documentElement;
+    root.style.setProperty('--hero-effect-circle-transition-x', `${x}%`);
+    root.style.setProperty('--hero-effect-circle-transition-y', `${y}%`);
+    root.style.setProperty('--hero-effect-circle-scale', scale.toFixed(3));
+}
+
+/**
+ * Retorna true si scrollY > 120svh.
+ */
+function isScrollInRange(): boolean {
+    return window.scrollY <= window.innerHeight * 1.20;
+}
+
+/**
+ * Controla el evento de mouse con throttle manual.
+ */
+function handleMouseMove(event: MouseEvent): void {
+    if ( ! isScrollInRange() || window.innerWidth < 981 ) { return; }
+
+    // Solo recalcula si el mouse realmente se movió bastante
+    if (
+        Math.abs(event.clientX - lastMouseX) < 3 &&
+        Math.abs(event.clientY - lastMouseY) < 3
+    ) {
+        return;
+    }
+
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+
+    // Throttle simple usando setTimeout
+    if (throttleTimeout === null) {
+        throttleTimeout = window.setTimeout(() => {
+            applyMouseEffects();
+            throttleTimeout = null;
+        }, THROTTLE_DELAY);
+    }
+}
+
+function handleResize(): void {
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+}
+
+onMounted(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('resize', handleResize);
+
+    if (throttleTimeout !== null) {
+        clearTimeout(throttleTimeout);
+    }
+});
+
+
+defineOptions({
     name: 'HomeView'
-};
+});
 
 </script>
 
@@ -43,7 +160,7 @@ export default {
         width: 100%;
         height: calc(100svh + 60px);
         margin-bottom: -160px;
-        background: linear-gradient(#226371 0%, #091923 100%);
+        background: linear-gradient(#02686c 0%, #091923 100%);
         background-size: cover;
         background-position: top center;
 
@@ -58,15 +175,6 @@ export default {
             mix-blend-mode: color-dodge;
             z-index: 0;
         }
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            background-image: linear-gradient(transparent 3%, #081822 97%);
-            width: 100%;
-            height: 100%;
-            box-shadow: 0 0 0 500px #081822;
-        }
 
         & .row {
             position: sticky;
@@ -78,7 +186,7 @@ export default {
         position: absolute;
         top: calc(-32svh - 60px);
         width: 100%;
-        height: calc(100svh + 60px);
+        height: calc(100svh + 160px);
         overflow: hidden;
         box-shadow: inset 0 0 210px #081822;
         
@@ -89,25 +197,42 @@ export default {
             background-image: linear-gradient(#23616f 0%, rgb(8 24 34) 100%), url(/src/assets/images/sunset-bg-1920x820.avif);
             background-size: cover;
             background-position: center;
-            opacity: 0.05;
+            opacity: 0.08;
             background-blend-mode: color-burn;
+        }
+        
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            background-image: linear-gradient(transparent, #081822 103svh);
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 0 500px #081822;
         }
     }
     .hero-effect .circle {
         position: absolute;
         left: 50%;
-        top: 50%;
-        background-image: linear-gradient(180deg,rgba(11, 25, 3, 0.12) 0%, transparent 100%);
+        top: calc(32svh + 225px);
+        background-image: linear-gradient(180deg,rgba(0, 170, 176, 0.33) 0%, transparent 100%);
         border-radius: calc(infinity * 1px);
         box-shadow:
             inset -1px -1px 1px #1b777aa6,
-            inset -6px 4px 40px #18808494,
+            inset -6px 4px 40px #188084,
             inset 1px 1px 1px #00aab0bd,
             inset 6px 4px 40px #00aab045;
-        transform: translate(-50%, -50%);
-        border: 1px solid rgba(0, 170, 176, 0.388);
-        opacity: .4;
+        transform:
+            translate(
+                var(--hero-effect-circle-transition-x),
+                var(--hero-effect-circle-transition-y)
+            )
+            scale(var(--hero-effect-circle-scale));
+        border: 1px solid rgba(0, 170, 176, 0.4);
+        opacity: .42;
         backdrop-filter: blur(62px);
+        transition: transform 0.25s ease-out;
+        will-change: transform;
     }
     .hero-effect .circle-1 {
         width: 620px;
@@ -124,13 +249,16 @@ export default {
     .hero-effect .circle-4 {
         width: 1220px;
         height: 1220px;
+        box-shadow:
+            0 0 800px 200px rgba(0, 170, 176, 0.66),
     }
     .mask-logo {
         width: 320px;
         height: 320px;
         margin-inline: auto;
-        background-image: radial-gradient(rgb(255 255 255 / .02), rgb(255 255 255 / .16));
+        background-color: rgb(255 255 255 / .22);
         mask-image: url(@/assets/images/logo-srmandeli-full-white.svg);
+        /* background-image: url(@/assets/images/Logo_SrMandeli.svg); */
     }
 
     .about .row {
