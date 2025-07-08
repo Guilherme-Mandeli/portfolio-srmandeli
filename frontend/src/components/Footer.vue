@@ -5,9 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({
-  name: 'MainFooter'
-})
+
 </script>
 
 <style scoped>

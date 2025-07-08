@@ -3,7 +3,7 @@
         <SiteHeader/>
         
         <main :id="mainID">
-            <NuxtPage />
+            <router-view />
         </main>
 
         <SiteFooter />
@@ -13,8 +13,8 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
-import SiteHeader from '~/components/MainHeader.vue'
-import SiteFooter from '~/components/MainFooter.vue'
+import SiteHeader from '@/components/Header.vue'
+import SiteFooter from '@/components/Footer.vue'
 
 const route = useRoute()
 
