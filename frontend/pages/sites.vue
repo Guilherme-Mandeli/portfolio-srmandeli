@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import type { Site } from '@/types/Site'
+import { defineComponent, onMounted, ref } from 'vue';
+import type { Site } from '@/types/Site';
 
 export default defineComponent({
   name: 'SitesView',

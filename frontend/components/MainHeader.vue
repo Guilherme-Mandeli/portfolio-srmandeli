@@ -8,7 +8,9 @@
 </template>
 
 <script lang="ts" setup>
-
+defineOptions({
+  name: 'MainHeader'
+})
 </script>
 
 <style scoped>
