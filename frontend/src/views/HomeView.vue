@@ -63,95 +63,153 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
 
-let lastMouseX = -1;
-let lastMouseY = -1;
-let viewportWidth = window.innerWidth;
-let viewportHeight = window.innerHeight;
-let throttleTimeout: number | null = null;
+/* —————————————————————————————
+   1) Configuración y estado
+   ————————————————————————————— */
+const root = document.documentElement;
 
-const THROTTLE_DELAY = 50; // Milisegundos
+let viewport = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+  maxScrollY: window.innerHeight * 1.20
+};
 
-/**
- * Calcula y aplica las variables CSS optimizadas por posición de mouse.
- */
-function applyMouseEffects(): void {
-    const ratioX = lastMouseX / viewportWidth;
-    const ratioY = lastMouseY / viewportHeight;
+let mouse = {
+  targetX: -1,
+  targetY: -1,
+  currentX: -1,
+  currentY: -1
+};
 
-    const x = -30 + (-70 + 30) * ratioX;
-    const y = -30 + (-70 + 30) * ratioY;
+let rafId: number | null = null;
+let lastTime = 0;
 
-    const dx = ratioX - 0.5;
-    const dy = ratioY - 0.5;
-    const distance = Math.sqrt(dx * dx + dy * dy) / 0.707;
+const CONFIG = {
+  rangeMin: -30,
+  rangeMax: -70,
+  maxDist2: 0.5,
+  fps: 40,
+  frameDuration: 1000 / 40,
+  lerpSpeed: 0.1,
+  lerpEpsilon: 0.1,
+  minScale: 0.9,
+  maxScale: 1.25,
+  breakpoint: 981
+};
 
-    const minScale = 0.9;
-    const maxScale = 1.25;
-    const scale = minScale + (maxScale - minScale) * distance;
+/* —————————————————————————————
+   2) Lógica pura de cálculo
+   ————————————————————————————— */
+function updateEffects(x: number, y: number) {
+  const rx = x / viewport.width;
+  const ry = y / viewport.height;
+  const posX = CONFIG.rangeMin + (CONFIG.rangeMax - CONFIG.rangeMin) * rx;
+  const posY = CONFIG.rangeMin + (CONFIG.rangeMax - CONFIG.rangeMin) * ry;
 
-    const root = document.documentElement;
-    root.style.setProperty('--hero-effect-circle-transition-x', `${x}%`);
-    root.style.setProperty('--hero-effect-circle-transition-y', `${y}%`);
-    root.style.setProperty('--hero-effect-circle-scale', scale.toFixed(3));
+  const dx = rx - 0.5;
+  const dy = ry - 0.5;
+  const dist2 = dx * dx + dy * dy;
+  const norm = Math.min(1, dist2 / CONFIG.maxDist2);
+
+  const scale =
+    CONFIG.minScale + (CONFIG.maxScale - CONFIG.minScale) * norm;
+
+  root.style.setProperty(
+    '--hero-effect-circle-transition-x',
+    `${posX.toFixed(3)}%`
+  );
+  root.style.setProperty(
+    '--hero-effect-circle-transition-y',
+    `${posY.toFixed(3)}%`
+  );
+  root.style.setProperty(
+    '--hero-effect-circle-scale',
+    scale.toFixed(3)
+  );
 }
 
-/**
- * Retorna true si scrollY > 120svh.
- */
-function isScrollInRange(): boolean {
-    return window.scrollY <= window.innerHeight * 1.20;
-}
+function animate(now = performance.now()) {
+  const elapsed = now - lastTime;
+  if (elapsed >= CONFIG.frameDuration) {
+    lastTime = now;
 
-/**
- * Controla el evento de mouse con throttle manual.
- */
-function handleMouseMove(event: MouseEvent): void {
-    if ( ! isScrollInRange() || window.innerWidth < 981 ) { return; }
+    const dx = mouse.targetX - mouse.currentX;
+    const dy = mouse.targetY - mouse.currentY;
 
-    // Solo recalcula si el mouse realmente se movió bastante
+    mouse.currentX += dx * CONFIG.lerpSpeed;
+    mouse.currentY += dy * CONFIG.lerpSpeed;
+
+    updateEffects(mouse.currentX, mouse.currentY);
+
     if (
-        Math.abs(event.clientX - lastMouseX) < 3 &&
-        Math.abs(event.clientY - lastMouseY) < 3
+      Math.abs(dx) < CONFIG.lerpEpsilon &&
+      Math.abs(dy) < CONFIG.lerpEpsilon
     ) {
-        return;
+      rafId = null;
+      return;
     }
+  }
 
-    lastMouseX = event.clientX;
-    lastMouseY = event.clientY;
-
-    // Throttle simple usando setTimeout
-    if (throttleTimeout === null) {
-        throttleTimeout = window.setTimeout(() => {
-            applyMouseEffects();
-            throttleTimeout = null;
-        }, THROTTLE_DELAY);
-    }
+  rafId = requestAnimationFrame(animate);
 }
 
-function handleResize(): void {
-    viewportWidth = window.innerWidth;
-    viewportHeight = window.innerHeight;
+/* —————————————————————————————
+   3) Handlers y listeners
+   ————————————————————————————— */
+function onMouseMove(e: MouseEvent) {
+  if (
+    window.scrollY > viewport.maxScrollY ||
+    window.innerWidth < CONFIG.breakpoint
+  ) {
+    return;
+  }
+  mouse.targetX = e.clientX;
+  mouse.targetY = e.clientY;
+
+  if (rafId === null) {
+    mouse.currentX = mouse.targetX;
+    mouse.currentY = mouse.targetY;
+    lastTime = performance.now();
+    animate();
+  }
 }
 
-onMounted(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('resize', handleResize);
-});
+function onResize() {
+  viewport.width = window.innerWidth;
+  viewport.height = window.innerHeight;
+  viewport.maxScrollY = window.innerHeight * 1.20;
+}
 
-onBeforeUnmount(() => {
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('resize', handleResize);
+function onVisibilityChange() {
+  if (document.hidden && rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
 
-    if (throttleTimeout !== null) {
-        clearTimeout(throttleTimeout);
-    }
-});
+/* —————————————————————————————
+   Montaje y limpieza
+   ————————————————————————————— */
+function addListeners() {
+  window.addEventListener('mousemove', onMouseMove, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+  document.addEventListener('visibilitychange', onVisibilityChange);
+}
 
+function removeListeners() {
+  window.removeEventListener('mousemove', onMouseMove);
+  window.removeEventListener('resize', onResize);
+  document.removeEventListener('visibilitychange', onVisibilityChange);
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
 
-defineOptions({
-    name: 'HomeView'
-});
+onMounted(addListeners);
+onBeforeUnmount(removeListeners);
 
+defineOptions({ name: 'HomeView' });
 </script>
 
 <style scoped>
@@ -174,6 +232,7 @@ defineOptions({
             opacity: 0.24;
             mix-blend-mode: color-dodge;
             z-index: 0;
+            pointer-events: none;
         }
 
         & .row {
@@ -189,6 +248,7 @@ defineOptions({
         height: calc(100svh + 160px);
         overflow: hidden;
         box-shadow: inset 0 0 210px #081822;
+        pointer-events: none;
         
         &::before {
             content: "";
@@ -199,6 +259,7 @@ defineOptions({
             background-position: center;
             opacity: 0.08;
             background-blend-mode: color-burn;
+            pointer-events: none;
         }
         
         &::after {
@@ -209,6 +270,7 @@ defineOptions({
             width: 100%;
             height: 100%;
             box-shadow: 0 0 0 500px #081822;
+            pointer-events: none;
         }
     }
     .hero-effect .circle {
@@ -231,8 +293,8 @@ defineOptions({
         border: 1px solid rgba(0, 170, 176, 0.4);
         opacity: .42;
         backdrop-filter: blur(62px);
-        transition: transform 0.25s ease-out;
         will-change: transform;
+        pointer-events: none;
     }
     .hero-effect .circle-1 {
         width: 620px;
@@ -259,6 +321,7 @@ defineOptions({
         background-color: rgb(255 255 255 / .22);
         mask-image: url(@/assets/images/logo-srmandeli-full-white.svg);
         /* background-image: url(@/assets/images/Logo_SrMandeli.svg); */
+        pointer-events: none;
     }
 
     .about .row {
