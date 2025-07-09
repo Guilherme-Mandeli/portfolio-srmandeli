@@ -8,17 +8,22 @@
     "playwright.config.*",
     "eslint.config.*"
   ],
-  "compilerOptions": {
-    "noEmit": true,
+  "compilerOptions": {  
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
 
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["node"],
+    "composite": true,
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
 
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
   }
 }

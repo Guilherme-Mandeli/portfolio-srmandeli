@@ -13,6 +13,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "verbatimModuleSyntax": true
-  }
+    "types": ["vite/client"],
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src"]
 }
