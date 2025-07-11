@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+    .fade-up {
+        @apply opacity-0 translate-y-5 transition-all duration-[2700ms] ease-out;
+    }
+
+    .fade-up.visible {
+        @apply opacity-100 translate-y-0;
+    }
+}
+
 *,
 *::before,
 *::after {

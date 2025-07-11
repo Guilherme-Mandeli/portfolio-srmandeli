@@ -14,7 +14,13 @@
       "@/*": ["src/*"]
     },
     "types": ["vite/client"],
-    "verbatimModuleSyntax": false
+    "module": "ESnext",
+    "target": "ESnext",
+    "moduleResolution": "node",
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true
   },
   "include": ["src"]
 }
